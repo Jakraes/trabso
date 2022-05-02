@@ -9,6 +9,7 @@
  ******************************************************************************/
 #include "common.h"
 #include "utils.h"
+#include <sys/types.h>
 #include <sys/wait.h>
 // #define DEBUG_MODE FALSE                         // To disable debug messages, uncomment this line
 
@@ -133,7 +134,8 @@ int loadStats(Contadores *pStats)
     else
     {
         fscanf(ficheiro, "%d %d %d", stats.contadorNormal, stats.contadorViaVerde, stats.contadorAnomalias);
-        success("S2", "estatisticas carregadas")
+        success("S2", "estatisticas carregadas");
+        fclose(ficheiro);
     }
     return 0;
 }
@@ -155,6 +157,7 @@ int criaFicheiroServidor()
     {
         fprintf(ficheiro, "%d", getpid());
         success("S3", "%d", getpid());
+        fclose(ficheiro);
     }
     return 0;
 }
@@ -168,13 +171,14 @@ int criaFicheiroServidor()
 int criaFifo()
 {
     FILE *ficheiro;
-    if ((ficheiro = fopen(FILE_PEDIDOS, "w")) == NULL)
+    if ((ficheiro = fopen(FILE_PEDIDOS, "wb")) == NULL)
     {
         error("S4", "ficheiro nao existe")
     }
     else
     {
         success("S4", "criei fifo");
+        fclose(ficheiro);
     }
     return 0;
 }
@@ -216,6 +220,7 @@ Passagem lePedido()
     {
         fscanf(f, "%d %s %s %d %d", p.tipo_passagem, p.matricula, p.lanco, p.pid_cliente, p.pid_servidor_dedicado);
         success("S6", "li fifo");
+        fclose(ficheiro);
     }
     return p;
 }
